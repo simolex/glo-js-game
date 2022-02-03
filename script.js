@@ -3,6 +3,7 @@
 const game = function () {
   const startRange = 1;
   const endRange = 100;
+  const countRounds = 10;
 
   const isNumber = function (num) {
     num += "";
@@ -13,11 +14,13 @@ const game = function () {
     return parseFloat(num);
   };
 
-  const startGame = function () {
+  const startGame = function (leftRounds) {
+    //let  = true;
     const secretNumber = startRange + Math.floor(Math.random() * endRange);
     console.log(secretNumber);
-    const gameRound = function () {
-      let requestNumber;
+
+    const gameRound = function (leftRounds) {
+      let requestNumber, needReplay;
 
       const getRequest = function () {
         requestNumber = prompt(`Угадай число от ${startRange} до ${endRange}`);
@@ -28,37 +31,39 @@ const game = function () {
         return requestNumber != null ? getNumber(requestNumber) : null;
       };
       requestNumber = getRequest();
+
+      leftRounds--;
+
       switch (true) {
         case requestNumber == null:
-          //return null;
+          needReplay = false;
           break;
         case requestNumber == secretNumber:
-          console.log("Поздравляю, Вы угадали!!!");
+          needReplay = confirm("Поздравляю, Вы угадали!!! Хотели бы сыграть еще?");
+          break;
+        case leftRounds == 0:
+          needReplay = confirm("Попытки закончились, хотите сыграть еще?");
           break;
         case requestNumber > secretNumber:
-          console.log("Загаданное число меньше");
-          gameRound();
+          console.log(`Загаданное число меньше, осталось попыток: ${leftRounds}`);
+          needReplay = gameRound(leftRounds);
           break;
         case requestNumber < secretNumber:
-          console.log("Загаданное число больше");
-          gameRound();
+          console.log(`Загаданное число больше, осталось попыток: ${leftRounds}`);
+          needReplay = gameRound(leftRounds);
           break;
       }
-      return null;
+      return needReplay;
     };
 
-    const gameResult = gameRound();
-    if (gameResult == null) {
-      return;
+    const gameResult = gameRound(leftRounds);
+    if (gameResult) {
+      startGame(leftRounds);
     }
-
-    // const repeatGame = confirm("Хотели бы сыграть еще?");
-    // if (repeatGame) {
-    //   startGame();
-    // }
+    return gameResult;
   };
 
-  startGame();
+  startGame(countRounds);
   console.log("Игра окончена.");
   console.log("Вы молодец! Ждем вас снова.");
 };
