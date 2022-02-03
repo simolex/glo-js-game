@@ -8,6 +8,7 @@ const game = function () {
     num += "";
     return !isNaN(parseFloat(num)) && isFinite(num);
   };
+
   const getNumber = function (num) {
     return parseFloat(num);
   };
@@ -18,15 +19,19 @@ const game = function () {
     const gameRound = function () {
       let requestNumber;
 
-      do {
+      const getRequest = function () {
         requestNumber = prompt(`Угадай число от ${startRange} до ${endRange}`);
-      } while (requestNumber != null && !isNumber(requestNumber));
-
-      if (requestNumber == null) {
-        return null;
-      }
-      requestNumber = getNumber(requestNumber);
+        if (requestNumber != null && !isNumber(requestNumber)) {
+          console.log("Введи число!");
+          getRequest();
+        }
+        return requestNumber != null ? getNumber(requestNumber) : null;
+      };
+      requestNumber = getRequest();
       switch (true) {
+        case requestNumber == null:
+          //return null;
+          break;
         case requestNumber == secretNumber:
           console.log("Поздравляю, Вы угадали!!!");
           break;
@@ -39,6 +44,7 @@ const game = function () {
           gameRound();
           break;
       }
+      return null;
     };
 
     const gameResult = gameRound();
@@ -46,10 +52,10 @@ const game = function () {
       return;
     }
 
-    const repeatGame = confirm("Хотели бы сыграть еще?");
-    if (repeatGame) {
-      startGame();
-    }
+    // const repeatGame = confirm("Хотели бы сыграть еще?");
+    // if (repeatGame) {
+    //   startGame();
+    // }
   };
 
   startGame();
